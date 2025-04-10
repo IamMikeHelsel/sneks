@@ -53,7 +53,6 @@ A classic Snake game implemented in Python with a highly performant, modern and 
 
     *(Note: Ensure `requirements.txt` lists all necessary packages, including the GUI library, pytest, and pytest-cov).*
 
-
 ## How to Run the Game
 
 Execute the main Python script to start the game:
@@ -135,10 +134,12 @@ Consider these options for distributing your Snake game:
 
 1. **Desktop Application**
    * Package as standalone executable using PyInstaller
+
      ```bash
      pip install pyinstaller
      pyinstaller --onefile --windowed main.py
      ```
+
    * Create platform-specific installers using tools like Inno Setup (Windows) or AppImage (Linux)
    * Distribute via GitHub Releases with version tracking
 
@@ -149,11 +150,13 @@ Consider these options for distributing your Snake game:
 
 3. **Package Distribution**
    * Publish to PyPI (Python Package Index)
+
      ```bash
      pip install setuptools wheel twine
      python setup.py sdist bdist_wheel
      twine upload dist/*
      ```
+
    * This allows users to install with `pip install snake-game`
 
 4. **Alternative Platforms**
