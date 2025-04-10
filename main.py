@@ -13,7 +13,7 @@ def main():
     """
     # Initialize Pygame with better graphics options
     pygame.init()
-    pygame.display.set_caption("Modern Snake Game")
+    pygame.display.set_caption("sneks")
 
     # Set icon
     icon = pygame.Surface((32, 32))
