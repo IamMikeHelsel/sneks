@@ -51,8 +51,7 @@ class TestGame:
         # Test top wall collision
         game = Game(800, 600)
         # Position snake near top wall
-        game.snake.x = 100
-        game.snake.y = 0
+        game.snake.body = [(100, 0)]
         game.snake.direction = UP
 
         # Update should cause collision
@@ -62,8 +61,7 @@ class TestGame:
         # Test bottom wall collision
         game = Game(800, 600)
         # Position snake near bottom wall
-        game.snake.x = 100
-        game.snake.y = game.height - GRID_SIZE
+        game.snake.body = [(100, game.height - GRID_SIZE)]
         game.snake.direction = DOWN
 
         # Update should cause collision
@@ -73,8 +71,7 @@ class TestGame:
         # Test left wall collision
         game = Game(800, 600)
         # Position snake near left wall
-        game.snake.x = 0
-        game.snake.y = 100
+        game.snake.body = [(0, 100)]
         game.snake.direction = LEFT
 
         # Update should cause collision
@@ -91,8 +88,6 @@ class TestGame:
         # Update should cause collision
         game.update()
         assert game.is_game_over
-
-
 
     def test_handle_input(self):
         """Test handling directional input"""

@@ -37,6 +37,78 @@ class Button:
                 if self.hovered and self.action:
                     self.action()
 
+    def draw(self, surface):
+        """
+        Draw the button on the given surface with visual feedback for hover state
+
+        Args:
+            surface: The pygame surface to draw on
+        """
+        # Determine colors based on hover state
+        bg_color = (80, 180, 80) if self.hovered else (60, 140, 60)
+        border_color = (120, 255, 120) if self.hovered else (100, 200, 100)
+        text_color = (255, 255, 255)
+
+        # Create button surface with alpha for glow effects
+        button_surface = pygame.Surface(
+            (self.rect.width, self.rect.height), pygame.SRCALPHA
+        )
+
+        # Draw button base
+        pygame.draw.rect(
+            button_surface,
+            bg_color,
+            (0, 0, self.rect.width, self.rect.height),
+            border_radius=10,
+        )
+
+        # Draw border
+        pygame.draw.rect(
+            button_surface,
+            border_color,
+            (0, 0, self.rect.width, self.rect.height),
+            border_radius=10,
+            width=2,
+        )
+
+        # Add highlight effect on top
+        highlight_height = self.rect.height // 3
+        for i in range(highlight_height):
+            alpha = 50 - int((i / highlight_height) * 50)
+            pygame.draw.rect(
+                button_surface,
+                (255, 255, 255, alpha),
+                (2, 2 + i, self.rect.width - 4, 1),
+                border_radius=10,
+            )
+
+        # Draw text
+        font = pygame.font.SysFont("Arial", 20, bold=True)
+        text_surf = font.render(self.text, True, text_color)
+        text_pos = (
+            self.rect.width // 2 - text_surf.get_width() // 2,
+            self.rect.height // 2 - text_surf.get_height() // 2,
+        )
+        button_surface.blit(text_surf, text_pos)
+
+        # Draw button on target surface
+        surface.blit(button_surface, (self.rect.x, self.rect.y))
+
+        # Add glow effect if hovered
+        if self.hovered:
+            glow_surf = pygame.Surface(
+                (self.rect.width + 10, self.rect.height + 10), pygame.SRCALPHA
+            )
+            for i in range(5):
+                alpha = 10 - i * 2
+                pygame.draw.rect(
+                    glow_surf,
+                    (120, 255, 120, alpha),
+                    (5 - i, 5 - i, self.rect.width + i * 2, self.rect.height + i * 2),
+                    border_radius=10 + i,
+                )
+            surface.blit(glow_surf, (self.rect.x - 5, self.rect.y - 5))
+
 
 class Panel:
     """

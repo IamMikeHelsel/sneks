@@ -80,7 +80,10 @@ class TestMenuScreen(unittest.TestCase):
     def setUp(self):
         pygame.init()
         self.start_game = MagicMock()
-        self.menu_screen = MenuScreen(SCREEN_WIDTH, SCREEN_HEIGHT, self.start_game)
+        self.open_options = MagicMock()
+        self.menu_screen = MenuScreen(
+            SCREEN_WIDTH, SCREEN_HEIGHT, self.start_game, self.open_options
+        )
 
     def tearDown(self):
         pygame.quit()

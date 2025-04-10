@@ -42,10 +42,8 @@ class Game:
         head_x, head_y = self.snake.get_head_position()
         if head_x < 0 or head_x >= self.width or head_y < 0 or head_y >= self.height:
             self.is_game_over = True
-            return
-
-        # Check if the snake is dead due to self-collision
-        if self.snake.is_dead:self.snake.body[1:]:
+            return  # Check if the snake is dead due to self-collision
+        if self.snake.check_self_collision():
             self.is_game_over = True
             return
 

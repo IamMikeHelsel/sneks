@@ -36,9 +36,10 @@ def main():
     game = Game(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     # Create screen manager for handling different screens
-    screen_manager = ScreenManager(SCREEN_WIDTH, SCREEN_HEIGHT)
+    screen_manager = ScreenManager(
+        SCREEN_WIDTH, SCREEN_HEIGHT
+    )  # Function to start the game from menu
 
-    # Function to start the game from menu
     def start_game():
         screen_manager.set_current_screen("game")
 
@@ -47,8 +48,12 @@ def main():
         screen_manager.set_current_screen("menu")
         game.reset()  # Reset game state
 
+    # Placeholder function for options menu (not implemented yet)
+    def open_options():
+        pass  # This can be implemented later when options menu is added
+
     # Create screens
-    menu_screen = MenuScreen(SCREEN_WIDTH, SCREEN_HEIGHT, start_game)
+    menu_screen = MenuScreen(SCREEN_WIDTH, SCREEN_HEIGHT, start_game, open_options)
     game_screen = GameScreen(
         SCREEN_WIDTH, SCREEN_HEIGHT, game, renderer, return_to_menu
     )
@@ -87,7 +92,7 @@ def main():
         screen_manager.update(dt)
 
         # Render current screen to the display
-        screen.fill((5, 5, 30))  # Clear screen with dark background
+        screen.fill((20, 20, 40))  # Clear screen with dark background
         screen_manager.render(screen)
 
         # Update display with hardware acceleration if available

@@ -16,7 +16,7 @@ class Snake:
         """
         # Initialize snake with a single segment
         self.body = [(x, y)]
-
+        self.is_dead = False
         # Start with right direction
         self.direction = RIGHT
 

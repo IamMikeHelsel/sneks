@@ -30,9 +30,12 @@ class Screen:
 class MenuScreen(Screen):
     """Main menu screen with game options"""
 
-    def __init__(self, screen_width, screen_height, start_game_callback):
+    def __init__(
+        self, screen_width, screen_height, start_game_callback, open_options_callback
+    ):
         super().__init__(screen_width, screen_height)
         self.start_game_callback = start_game_callback
+        self.open_options_callback = open_options_callback
 
         # Background animation
         self.bg_offset = 0
@@ -227,6 +230,29 @@ class GameScreen(Screen):
             )
             surface.blit(shadow, shadow_rect)
             surface.blit(paused_text, text_rect)
+
+
+class OptionsScreen(Screen):
+    """Options screen for adjusting game settings"""
+
+    def __init__(self, screen_width, screen_height, return_to_menu_callback):
+        super().__init__(screen_width, screen_height)
+        self.return_to_menu_callback = return_to_menu_callback
+
+    def handle_events(self, events):
+        pass
+
+    def update(self, dt):
+        pass
+
+    def render(self, surface):
+        surface.fill((30, 30, 60))
+        font = pygame.font.SysFont("Arial", 48, bold=True)
+        options_text = font.render("OPTIONS", True, (255, 255, 255))
+        text_rect = options_text.get_rect(
+            center=(self.screen_width // 2, self.screen_height // 2)
+        )
+        surface.blit(options_text, text_rect)
 
 
 class ScreenManager:
