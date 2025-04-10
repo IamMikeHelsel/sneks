@@ -46,13 +46,7 @@ coverage.xml
 .DS_Store
 
 # Pygame
-*.png
-*.mp3
-*.wav
-*.bmp
-*.jpg
-*.jpeg
-*.gif
+
 
 # Distribution / packaging
 .Python
