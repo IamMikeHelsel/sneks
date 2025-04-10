@@ -19,16 +19,16 @@ class Game:
         self.width = width
         self.height = height
         self.score = 0
-        self.is_game_over = False
-
-        # Initialize snake in the middle of the screen
+        self.is_game_over = False  # Initialize snake in the middle of the screen
         start_x = (width // 2) // GRID_SIZE * GRID_SIZE
         start_y = (height // 2) // GRID_SIZE * GRID_SIZE
         self.snake = Snake(start_x, start_y)
 
         # Initialize food at a random position
         self.food = Food(0, 0)
-        self.food.randomize_position(width, height, self.snake.body)    def update(self):
+        self.food.randomize_position(width, height, self.snake.body)
+
+    def update(self):
         """
         Update the game state for one frame
         """
@@ -79,9 +79,11 @@ class Game:
         # Reset snake, food, and other game elements
         # This will need to match the initialization in __init__
         # Recreate the snake
-        self.snake = Snake(start_x, start_y)        # Generate new food at a random position
+        self.snake = Snake(start_x, start_y)  # Generate new food at a random position
         self.food = Food(0, 0)  # Initialize with temporary position
-        self.food.randomize_position(self.width, self.height, self.snake.get_body_positions())
+        self.food.randomize_position(
+            self.width, self.height, self.snake.get_body_positions()
+        )
 
     def get_score(self):
         """

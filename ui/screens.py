@@ -195,13 +195,13 @@ class GameScreen(Screen):
     def render(self, surface):
         """Render the game screen"""
         if not self.game:
-            return        # Render game elements using the renderer
+            return  # Render game elements using the renderer
         # Modified to use a custom method that doesn't render the score
         self.renderer.render_game(surface, self.game)
 
         # We'll let the score_display handle rendering the score
         self.score_display.draw(surface, self.game.score)
-        
+
         # Render particles (important for game over effects)
         self.particles.draw(surface)
 
@@ -209,16 +209,22 @@ class GameScreen(Screen):
         if self.paused:
             font = pygame.font.SysFont("Arial", 48, bold=True)
             paused_text = font.render("PAUSED", True, (255, 255, 255))
-            text_rect = paused_text.get_rect(center=(self.screen_width//2, self.screen_height//2))
-            
+            text_rect = paused_text.get_rect(
+                center=(self.screen_width // 2, self.screen_height // 2)
+            )
+
             # Draw semi-transparent overlay
-            overlay = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
+            overlay = pygame.Surface(
+                (self.screen_width, self.screen_height), pygame.SRCALPHA
+            )
             overlay.fill((0, 0, 0, 128))  # semi-transparent black
             surface.blit(overlay, (0, 0))
-            
+
             # Draw text with shadow
             shadow = font.render("PAUSED", True, (50, 50, 50))
-            shadow_rect = shadow.get_rect(center=(self.screen_width//2+2, self.screen_height//2+2))
+            shadow_rect = shadow.get_rect(
+                center=(self.screen_width // 2 + 2, self.screen_height // 2 + 2)
+            )
             surface.blit(shadow, shadow_rect)
             surface.blit(paused_text, text_rect)
 
