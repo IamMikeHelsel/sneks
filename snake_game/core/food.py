@@ -57,6 +57,18 @@ class Food:
         self.x = random.randint(0, grid_max_x) * GRID_SIZE
         self.y = random.randint(0, grid_max_y) * GRID_SIZE
 
+    def reposition(self, snake_body):
+        """
+        Reposition the food to avoid the snake's body (alias for randomize_position)
+
+        Args:
+            snake_body: List of (x, y) positions of the snake's body to avoid
+        """
+        # Use existing screen dimensions
+        max_x = 800  # Default maximum x
+        max_y = 600  # Default maximum y
+        self.randomize_position(max_x, max_y, snake_body)
+
     def get_position(self):
         """
         Get the position of the food

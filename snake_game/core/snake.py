@@ -24,6 +24,26 @@ class Snake:
         self.growing = False
 
     @property
+    def x(self):
+        """
+        Get the x coordinate of the snake's head
+
+        Returns:
+            int: x coordinate
+        """
+        return self.body[0][0]
+
+    @property
+    def y(self):
+        """
+        Get the y coordinate of the snake's head
+
+        Returns:
+            int: y coordinate
+        """
+        return self.body[0][1]
+
+    @property
     def segments(self):
         """
         Property that returns the snake's body segments for renderer compatibility
@@ -80,6 +100,15 @@ class Snake:
         # Check if head position is in the rest of the body
         head_pos = self.get_head_position()
         return head_pos in self.body[1:]
+
+    def get_body_positions(self):
+        """
+        Get all body segment positions
+
+        Returns:
+            list: List of (x, y) coordinates for all body segments
+        """
+        return self.body.copy()
 
     def get_head_position(self):
         """

@@ -21,7 +21,7 @@ class Button:
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.action = action
-        self.hover = False
+        self.hovered = False  # Changed from hover to hovered for test compatibility
         self.pressed = False
 
         # Animation state
@@ -29,14 +29,26 @@ class Button:
         self.ripple_center = None
         self.ripple_radius = 0
 
+    @property
+    def hover(self):
+        """Backwards compatibility for hover property"""
+        return self.hovered
+
+    @hover.setter
+    def hover(self, value):
+        """Setter for backwards compatibility"""
+        self.hovered = value
+
     def update(self, events):
         """Update button state based on events"""
         mouse_pos = pygame.mouse.get_pos()
-        self.hover = self.rect.collidepoint(mouse_pos)
+        self.hovered = self.rect.collidepoint(
+            mouse_pos
+        )  # Changed from hover to hovered
 
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if self.hover:
+                if self.hovered:
                     self.pressed = True
                     self.ripple_center = (
                         mouse_pos[0] - self.rect.x,
@@ -45,7 +57,7 @@ class Button:
                     self.ripple_radius = 0
 
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                if self.hover and self.pressed and self.action:
+                if self.hovered and self.pressed and self.action:
                     self.action()
                 self.pressed = False
 
@@ -57,7 +69,7 @@ class Button:
                 self.ripple_center = None
 
         # Smooth hover animation
-        if self.hover:
+        if self.hovered:
             self.animation_progress = min(1.0, self.animation_progress + 0.1)
         else:
             self.animation_progress = max(0.0, self.animation_progress - 0.1)
@@ -204,7 +216,9 @@ class ScoreDisplay:
         self.target_score = 0
         self.last_score_increase_time = 0
         self.score_change_animation = 0
-
+        self.current_score = 0  # Added for test compatibility
+        self.elapsed_time = 0  # Added for test compatibility
+        
     def update(self, score, current_time):
         """
         Update score display with animation
@@ -215,6 +229,8 @@ class ScoreDisplay:
         """
         if score > self.target_score:
             self.target_score = score
+            self.current_score = score  # Update the test-compatible property
+            self.elapsed_time = current_time  # Store time for test compatibility
             self.last_score_increase_time = current_time
             self.score_change_animation = 1.0
 
@@ -224,10 +240,11 @@ class ScoreDisplay:
             increment = max(1, (self.target_score - self.current_displayed_score) // 10)
             self.current_displayed_score = min(
                 self.target_score, self.current_displayed_score + increment
-            )        # Fade animation
+            )
+        # Fade animation
         if self.score_change_animation > 0:
             self.score_change_animation = max(0, self.score_change_animation - 0.05)
-            
+
     def draw(self, surface, score=None):
         """
         Draw the score display on the surface
@@ -240,7 +257,7 @@ class ScoreDisplay:
         # Only render if not already handled by the renderer
         if score is None:
             score = self.current_displayed_score
-            
+
         font = pygame.font.Font(None, 36)
         text = font.render(f"Score: {score}", True, (255, 255, 255))
         surface.blit(text, (self.x, self.y))

@@ -28,9 +28,7 @@ class Game:
 
         # Initialize food at a random position
         self.food = Food(0, 0)
-        self.food.randomize_position(width, height, self.snake.body)
-
-    def update(self):
+        self.food.randomize_position(width, height, self.snake.body)    def update(self):
         """
         Update the game state for one frame
         """
@@ -81,11 +79,9 @@ class Game:
         # Reset snake, food, and other game elements
         # This will need to match the initialization in __init__
         # Recreate the snake
-        self.snake = Snake(start_x, start_y)
-
-        # Generate new food
-        self.food = Food(self.width, self.height)
-        self.food.reposition(self.snake.get_body_positions())
+        self.snake = Snake(start_x, start_y)        # Generate new food at a random position
+        self.food = Food(0, 0)  # Initialize with temporary position
+        self.food.randomize_position(self.width, self.height, self.snake.get_body_positions())
 
     def get_score(self):
         """

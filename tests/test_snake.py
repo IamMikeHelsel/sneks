@@ -48,15 +48,15 @@ class TestSnake:
         assert snake.x == 100  # X coordinate unchanged
         assert snake.y == 120  # Moved down by GRID_SIZE (20)
         assert (100, 120) in snake.body
-    
-        def test_change_direction_valid(self):
-            """Test valid direction changes"""
-            snake = Snake(100, 100)
-            snake.direction = RIGHT
-    
-            # Should be able to change to UP or DOWN, but not LEFT (reverse)
-            snake.change_direction(UP)
-            assert snake.direction == UP
+
+    def test_change_direction_valid(self):
+        """Test valid direction changes"""
+        snake = Snake(100, 100)
+        snake.direction = RIGHT
+
+        # Should be able to change to UP or DOWN, but not LEFT (reverse)
+        snake.change_direction(UP)
+        assert snake.direction == UP
 
         # Need to change to a horizontal direction first before going DOWN
         # as UP to DOWN is a 180-degree turn
@@ -67,7 +67,9 @@ class TestSnake:
         # Try invalid direction change (reverse)
         snake.direction = RIGHT
         snake.change_direction(LEFT)
-        assert snake.direction == RIGHT  # Direction should remain unchanged    def test_snake_grow(self):
+        assert snake.direction == RIGHT  # Direction should remain unchanged
+
+    def test_snake_grow(self):
         """Test snake growth"""
         snake = Snake(100, 100)
         initial_length = len(snake.body)

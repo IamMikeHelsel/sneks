@@ -15,6 +15,11 @@ class Particle:
         self.lifetime = lifetime
         self.size = size
         self.fade = fade
+        
+    @property
+    def is_dead(self):
+        """Check if particle has expired"""
+        return self.lifetime <= 0
 
     def update(self, dt):
         """Update particle position and lifetime"""
@@ -76,15 +81,14 @@ class ParticleSystem:
             b = min(255, max(0, color[2] + random.randint(-20, 20)))
             
             self.add_particle(x, y, velocity, (r, g, b, 255), lifetime, size)
-            
-    def update(self, dt):
+              def update(self, dt):
         """Update all particles in the system"""
-        # Filter out expired particles
-        self.particles = [p for p in self.particles if p.lifetime > 0]
-        
-        # Update remaining particles
+        # Update all particles first
         for particle in self.particles:
             particle.update(dt * 0.05)  # Scale down dt to make animations smoother
+            
+        # Filter out expired particles using is_dead property
+        self.particles = [p for p in self.particles if not p.is_dead]
             
     def draw(self, surface):
         """Draw all particles on the given surface"""
@@ -129,11 +133,19 @@ class AnimationManager:
                 else:
                     anim['elapsed'] = anim['duration']
                     anim['completed'] = True
-                    
-    def get_value(self, name):
-        """Get the current value of an animation"""
+                      def get_value(self, name, default_value=None):
+        """
+        Get the current value of an animation
+        
+        Args:
+            name: The name of the animation
+            default_value: The value to return if the animation doesn't exist
+        
+        Returns:
+            The current animation value, or the default value if animation not found
+        """
         if name not in self.animations:
-            return None
+            return default_value
             
         anim = self.animations[name]
         if anim['elapsed'] < 0:

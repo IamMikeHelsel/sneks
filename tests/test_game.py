@@ -90,22 +90,26 @@ class TestGame:
 
         # Update should cause collision
         game.update()
-        assert game.is_game_over    def test_self_collision(self):
+        assert game.is_game_over
+
+    def test_self_collision(self):
         """Test snake self-collision"""
         game = Game(800, 600)
         # Reset the snake with a specific configuration to ensure collision
         head_pos = game.snake.get_head_position()
-        
+
         # Manually manipulate the snake's body to create a collision scenario
         # First, get the current head position
         x, y = game.snake.get_head_position()
-        
+
         # Insert a body segment where the head will move next
-        next_pos = (x + GRID_SIZE, y) if game.snake.direction == RIGHT else (x, y + GRID_SIZE)
-        
+        next_pos = (
+            (x + GRID_SIZE, y) if game.snake.direction == RIGHT else (x, y + GRID_SIZE)
+        )
+
         # Insert this position in the middle of the snake's body
         game.snake.body.insert(1, next_pos)
-        
+
         # Update should cause collision
         game.update()
         assert game.is_game_over
