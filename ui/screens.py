@@ -168,21 +168,20 @@ class GameScreen(Screen):
                     self.game.reset()
                     self.game_over = False
                 elif event.key == pygame.K_ESCAPE:
-                    self.return_to_menu_callback()
-
-    def update(self, dt):
+                    self.return_to_menu_callback()    def update(self, dt):
         """Update game state"""
         if not self.paused and not self.game_over:
             # Update game state
-            game_result = self.game.update()
-
+            self.game.update()
+            
             # Check for game over
-            if game_result == "game_over":
+            if self.game.is_game_over:
                 self.game_over = True
                 # Add particle effect for game over
+                head_pos = self.game.snake.get_head_position()
                 self.particles.add_explosion(
-                    self.game.snake.segments[0][0] * GRID_SIZE + GRID_SIZE // 2,
-                    self.game.snake.segments[0][1] * GRID_SIZE + GRID_SIZE // 2,
+                    head_pos[0] + GRID_SIZE // 2,
+                    head_pos[1] + GRID_SIZE // 2,
                     color=(255, 50, 50),
                     count=50,
                 )
