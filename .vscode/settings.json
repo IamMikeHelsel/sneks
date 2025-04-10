@@ -4,5 +4,6 @@
     "python.testing.nosetestsEnabled": false,
     "python.testing.pytestArgs": [
         "tests"
-    ]
+    ],
+    "python.analysis.autoImportCompletions": true
 }

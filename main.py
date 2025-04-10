@@ -2,24 +2,9 @@ import pygame
 import sys
 import time
 from snake_game.core.game import Game
-from snake_game.core.config import (
-    SCREEN_WIDTH,
-    SCREEN_HEIGHT,
-    GRID_SIZE,
-    FPS,
-    BLACK,
-    WHITE,
-    GREEN,
-    RED,
-    BLUE,
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-)
+from snake_game.core.config import SCREEN_WIDTH, SCREEN_HEIGHT, FPS, GREEN
 from ui.renderer import SnakeRenderer
 from ui.screens import MenuScreen, GameScreen, ScreenManager
-from ui.effects import ParticleSystem, AnimationManager
 
 
 def main():

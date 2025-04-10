@@ -84,10 +84,12 @@ class Snake:
             or (new_direction == LEFT and self.direction != RIGHT)
             or (new_direction == RIGHT and self.direction != LEFT)
         ):
-            self.direction = new_direction    def grow(self):
+            self.direction = new_direction
+
+    def grow(self):
         """Grow the snake on the next move"""
         self.growing = True
-        
+
     def check_self_collision(self):
         """
         Check if the snake has collided with itself
@@ -98,16 +100,16 @@ class Snake:
         # Check if head position is in the rest of the body
         head_pos = self.get_head_position()
         return head_pos in self.body[1:]
-        
+
     def get_head_position(self):
         """
         Get the position of the snake's head
-        
+
         Returns:
             tuple: (x, y) coordinates of head
         """
         return self.body[0]
-        
+
     def get_body_positions(self):
         """
         Get all body segment positions
