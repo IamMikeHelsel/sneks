@@ -69,9 +69,23 @@ class Game:
 
     def reset(self):
         """
-        Reset the game to initial state
+        Reset the game state to start a new game
         """
-        self.__init__(self.width, self.height)
+        self.score = 0
+        self.is_game_over = False
+
+        # Reinitialize snake in the middle of the screen
+        start_x = (self.width // 2) // GRID_SIZE * GRID_SIZE
+        start_y = (self.height // 2) // GRID_SIZE * GRID_SIZE
+
+        # Reset snake, food, and other game elements
+        # This will need to match the initialization in __init__
+        # Recreate the snake
+        self.snake = Snake(start_x, start_y)
+
+        # Generate new food
+        self.food = Food(self.width, self.height)
+        self.food.reposition(self.snake.get_body_positions())
 
     def get_score(self):
         """

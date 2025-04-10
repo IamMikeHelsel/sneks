@@ -1,5 +1,6 @@
 import pygame
 import sys
+import time
 from snake_game.core.game import Game
 from snake_game.core.config import (
     SCREEN_WIDTH,
@@ -16,87 +17,98 @@ from snake_game.core.config import (
     LEFT,
     RIGHT,
 )
+from ui.renderer import SnakeRenderer
+from ui.screens import MenuScreen, GameScreen, ScreenManager
+from ui.effects import ParticleSystem, AnimationManager
 
 
 def main():
     """
     Main entry point for the Snake Game
     """
-    # Initialize Pygame
+    # Initialize Pygame with better graphics options
     pygame.init()
-    pygame.display.set_caption("Python Snake Game")
+    pygame.display.set_caption("Modern Snake Game")
 
-    # Create screen
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    # Set icon
+    icon = pygame.Surface((32, 32))
+    icon.fill((20, 20, 40))
+    pygame.draw.rect(icon, GREEN, (8, 8, 16, 16), border_radius=4)
+    pygame.display.set_icon(icon)
 
-    # Create clock for controlling game speed
+    # Create screen with modern rendering flags
+    screen = pygame.display.set_mode(
+        (SCREEN_WIDTH, SCREEN_HEIGHT), pygame.HWSURFACE | pygame.DOUBLEBUF
+    )
+
+    # Create clock for controlling game speed and timing
     clock = pygame.time.Clock()
+
+    # Create enhanced renderer
+    renderer = SnakeRenderer(SCREEN_WIDTH, SCREEN_HEIGHT)
 
     # Create game instance
     game = Game(SCREEN_WIDTH, SCREEN_HEIGHT)
 
-    # Font for displaying score and game over
-    font = pygame.font.SysFont(None, 36)
+    # Create screen manager for handling different screens
+    screen_manager = ScreenManager(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    # Function to start the game from menu
+    def start_game():
+        screen_manager.set_current_screen("game")
+
+    # Function to return to menu from game
+    def return_to_menu():
+        screen_manager.set_current_screen("menu")
+        game.reset()  # Reset game state
+
+    # Create screens
+    menu_screen = MenuScreen(SCREEN_WIDTH, SCREEN_HEIGHT, start_game)
+    game_screen = GameScreen(
+        SCREEN_WIDTH, SCREEN_HEIGHT, game, renderer, return_to_menu
+    )
+
+    # Add screens to manager
+    screen_manager.add_screen("menu", menu_screen)
+    screen_manager.add_screen("game", game_screen)
+
+    # Start with menu screen
+    screen_manager.set_current_screen("menu")
+
+    # Track time for smooth animations
+    last_time = time.time()
 
     # Main game loop
     while True:
-        # Event handling
-        for event in pygame.event.get():
+        # Calculate delta time for smooth animations
+        current_time = time.time()
+        dt = (current_time - last_time) * 1000.0  # Convert to milliseconds
+        last_time = current_time
+
+        # Cap dt to prevent physics issues on lag
+        dt = min(dt, 50)
+
+        # Get events once per frame
+        events = pygame.event.get()
+
+        # Check for quit
+        for event in events:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            elif event.type == pygame.KEYDOWN:
-                # Key mapping
-                if event.key == pygame.K_UP:
-                    game.handle_input(UP)
-                elif event.key == pygame.K_DOWN:
-                    game.handle_input(DOWN)
-                elif event.key == pygame.K_LEFT:
-                    game.handle_input(LEFT)
-                elif event.key == pygame.K_RIGHT:
-                    game.handle_input(RIGHT)
-                elif event.key == pygame.K_r and game.is_game_over:
-                    game.reset()
 
-        # Update game state (if game is not over)
-        if not game.is_game_over:
-            game.update()
+        # Update current screen
+        screen_manager.handle_events(events)
+        screen_manager.update(dt)
 
-        # Draw everything
-        screen.fill(BLACK)  # Clear screen
+        # Render current screen to the display
+        screen.fill((5, 5, 30))  # Clear screen with dark background
+        screen_manager.render(screen)
 
-        # Draw grid (optional)
-        for x in range(0, SCREEN_WIDTH, GRID_SIZE):
-            pygame.draw.line(screen, (50, 50, 50), (x, 0), (x, SCREEN_HEIGHT))
-        for y in range(0, SCREEN_HEIGHT, GRID_SIZE):
-            pygame.draw.line(screen, (50, 50, 50), (0, y), (SCREEN_WIDTH, y))
-
-        # Draw snake
-        for segment in game.snake.body:
-            pygame.draw.rect(
-                screen, GREEN, pygame.Rect(segment[0], segment[1], GRID_SIZE, GRID_SIZE)
-            )
-
-        # Draw food
-        food_rect = pygame.Rect(game.food.x, game.food.y, GRID_SIZE, GRID_SIZE)
-        pygame.draw.rect(screen, RED, food_rect)
-
-        # Draw score
-        score_text = font.render(f"Score: {game.score}", True, WHITE)
-        screen.blit(score_text, (10, 10))
-
-        # Draw game over message if game is over
-        if game.is_game_over:
-            game_over_text = font.render("Game Over! Press 'R' to restart", True, WHITE)
-            text_rect = game_over_text.get_rect(
-                center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-            )
-            screen.blit(game_over_text, text_rect)
-
-        # Update display
+        # Update display with hardware acceleration if available
         pygame.display.flip()
 
-        # Control game speed
+        # Control game speed with consistent timing
         clock.tick(FPS)
 
 
