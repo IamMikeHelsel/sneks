@@ -66,23 +66,23 @@ class ParticleSystem:
         """Add a single particle to the system"""
         self.particles.append(Particle(x, y, velocity, color, lifetime, size, fade))
 
-        def add_explosion(
-            self, x, y, count=20, color=(255, 255, 255), size_range=(1, 3), speed=2.0
-        ):
-            """Add an explosion effect at the given position"""
-            for _ in range(count):
-                angle = random.uniform(0, 2 * math.pi)
-                speed_val = random.uniform(0.5, speed)
-                velocity = (math.cos(angle) * speed_val, math.sin(angle) * speed_val)
-                size = random.uniform(size_range[0], size_range[1])
-                lifetime = random.uniform(20, 60)
+    def add_explosion(
+        self, x, y, count=20, color=(255, 255, 255), size_range=(1, 3), speed=2.0
+    ):
+        """Add an explosion effect at the given position"""
+        for _ in range(count):
+            angle = random.uniform(0, 2 * math.pi)
+            speed_val = random.uniform(0.5, speed)
+            velocity = (math.cos(angle) * speed_val, math.sin(angle) * speed_val)
+            size = random.uniform(size_range[0], size_range[1])
+            lifetime = random.uniform(20, 60)
 
-                # Vary color slightly
-                r = min(255, max(0, color[0] + random.randint(-20, 20)))
-                g = min(255, max(0, color[1] + random.randint(-20, 20)))
-                b = min(255, max(0, color[2] + random.randint(-20, 20)))
+            # Vary color slightly
+            r = min(255, max(0, color[0] + random.randint(-20, 20)))
+            g = min(255, max(0, color[1] + random.randint(-20, 20)))
+            b = min(255, max(0, color[2] + random.randint(-20, 20)))
 
-                self.add_particle(x, y, velocity, (r, g, b, 255), lifetime, size)
+            self.add_particle(x, y, velocity, (r, g, b, 255), lifetime, size)
 
     def update(self, dt):
         """Update all particles in the system"""
@@ -145,29 +145,29 @@ class AnimationManager:
                     anim["elapsed"] = anim["duration"]
                     anim["completed"] = True
 
-        def get_value(self, name, default_value=None):
-            """
-            Get the current value of an animation
+    def get_value(self, name, default_value=None):
+        """
+        Get the current value of an animation
 
-            Args:
-                name: The name of the animation
-                default_value: The value to return if the animation doesn't exist
+        Args:
+            name: The name of the animation
+            default_value: The value to return if the animation doesn't exist
 
-            Returns:
-                The current animation value, or the default value if animation not found
-            """
-            if name not in self.animations:
-                return default_value
+        Returns:
+            The current animation value, or the default value if animation not found
+        """
+        if name not in self.animations:
+            return default_value
 
-            anim = self.animations[name]
-            if anim["elapsed"] < 0:
-                return anim["start"]
+        anim = self.animations[name]
+        if anim["elapsed"] < 0:
+            return anim["start"]
 
-            progress = min(1.0, anim["elapsed"] / anim["duration"])
-            eased_progress = anim["ease_func"](progress)
+        progress = min(1.0, anim["elapsed"] / anim["duration"])
+        eased_progress = anim["ease_func"](progress)
 
-            # Linear interpolation between start and end values
-            return anim["start"] + (anim["end"] - anim["start"]) * eased_progress
+        # Linear interpolation between start and end values
+        return anim["start"] + (anim["end"] - anim["start"]) * eased_progress
 
     def _linear_ease(self, t):
         """Linear easing function"""
