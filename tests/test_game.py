@@ -81,8 +81,7 @@ class TestGame:
         # Test right wall collision
         game = Game(800, 600)
         # Position snake near right wall
-        game.snake.x = game.width - GRID_SIZE
-        game.snake.y = 100
+        game.snake.body = [(game.width - GRID_SIZE, 100)]
         game.snake.direction = RIGHT
 
         # Update should cause collision
