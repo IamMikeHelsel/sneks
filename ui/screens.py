@@ -160,20 +160,23 @@ class GameScreen(Screen):
                 elif event.key == pygame.K_LEFT:
                     self.game.handle_input(LEFT)
                 elif event.key == pygame.K_RIGHT:
-                    self.game.handle_input(RIGHT)
-                # Keep any other key handling you have
+                    self.game.handle_input(
+                        RIGHT
+                    )  # Keep any other key handling you have
                 if event.key == pygame.K_p:
                     self.paused = not self.paused
                 elif event.key == pygame.K_r and self.game_over:
                     self.game.reset()
                     self.game_over = False
                 elif event.key == pygame.K_ESCAPE:
-                    self.return_to_menu_callback()    def update(self, dt):
+                    self.return_to_menu_callback()
+
+    def update(self, dt):
         """Update game state"""
         if not self.paused and not self.game_over:
             # Update game state
             self.game.update()
-            
+
             # Check for game over
             if self.game.is_game_over:
                 self.game_over = True
@@ -192,19 +195,32 @@ class GameScreen(Screen):
     def render(self, surface):
         """Render the game screen"""
         if not self.game:
-            return
-
-        # Render game elements using the renderer
+            return        # Render game elements using the renderer
         # Modified to use a custom method that doesn't render the score
         self.renderer.render_game(surface, self.game)
 
         # We'll let the score_display handle rendering the score
         self.score_display.draw(surface, self.game.score)
+        
+        # Render particles (important for game over effects)
+        self.particles.draw(surface)
 
-        # Show any game over message if needed
-        if self.game.is_game_over:
-            # Show game over message here...
-            pass
+        # Display pause message if the game is paused
+        if self.paused:
+            font = pygame.font.SysFont("Arial", 48, bold=True)
+            paused_text = font.render("PAUSED", True, (255, 255, 255))
+            text_rect = paused_text.get_rect(center=(self.screen_width//2, self.screen_height//2))
+            
+            # Draw semi-transparent overlay
+            overlay = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
+            overlay.fill((0, 0, 0, 128))  # semi-transparent black
+            surface.blit(overlay, (0, 0))
+            
+            # Draw text with shadow
+            shadow = font.render("PAUSED", True, (50, 50, 50))
+            shadow_rect = shadow.get_rect(center=(self.screen_width//2+2, self.screen_height//2+2))
+            surface.blit(shadow, shadow_rect)
+            surface.blit(paused_text, text_rect)
 
 
 class ScreenManager:
