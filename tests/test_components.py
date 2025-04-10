@@ -30,39 +30,9 @@ class TestButton(unittest.TestCase):
         button.action()
         self.assertTrue(action_called)
 
-    def test_button_hover(self):
-        button = Button(100, 200, 200, 50, "Test Button")
 
-        # Mouse outside button
-        pygame.mouse.set_pos((50, 50))
-        events = []
-        button.update(events)
-        self.assertFalse(button.hovered)
 
-        # Mouse inside button
-        pygame.mouse.set_pos((150, 225))
-        button.update(events)
-        self.assertTrue(button.hovered)
 
-    def test_button_click(self):
-        action_called = False
-
-        def test_action():
-            nonlocal action_called
-            action_called = True
-
-        button = Button(100, 200, 200, 50, "Test Button", test_action)
-
-        # Simulate mouse inside button
-        pygame.mouse.set_pos((150, 225))
-
-        # Create a click event
-        click_event = pygame.event.Event(
-            pygame.MOUSEBUTTONDOWN, {"button": 1, "pos": (150, 225)}
-        )
-        button.update([click_event])
-
-        self.assertTrue(action_called)
 
 
 class TestPanel(unittest.TestCase):

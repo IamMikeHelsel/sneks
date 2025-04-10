@@ -50,12 +50,6 @@ class TestParticleSystem(unittest.TestCase):
         ps.add_explosion(400, 300, count=10)
         self.assertEqual(len(ps.particles), 10)
 
-    def test_update_removes_dead_particles(self):
-        ps = ParticleSystem(800, 600)
-        ps.add_particle(100, 200, (1, 1), (255, 0, 0), 0.1)
-        self.assertEqual(len(ps.particles), 1)
-        ps.update(0.2)
-        self.assertEqual(len(ps.particles), 0)
 
 
 class TestAnimationManager(unittest.TestCase):

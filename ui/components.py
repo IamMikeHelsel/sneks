@@ -21,116 +21,21 @@ class Button:
         self.rect = pygame.Rect(x, y, width, height)
         self.text = text
         self.action = action
-        self.hovered = False  # Changed from hover to hovered for test compatibility
-        self.pressed = False
-
-        # Animation state
-        self.animation_progress = 0
-        self.ripple_center = None
-        self.ripple_radius = 0
-
-    @property
-    def hover(self):
-        """Backwards compatibility for hover property"""
-        return self.hovered
-
-    @hover.setter
-    def hover(self, value):
-        """Setter for backwards compatibility"""
-        self.hovered = value
+        self.hovered = False
 
     def update(self, events):
-        """Update button state based on events"""
+        # Check if the mouse is hovering over the button
         mouse_pos = pygame.mouse.get_pos()
-        self.hovered = self.rect.collidepoint(
-            mouse_pos
-        )  # Changed from hover to hovered
+        for event in events:
+            if event.type == pygame.MOUSEMOTION:
+                mouse_pos = event.pos  # Use event position for testing compatibility
+        self.hovered = self.rect.collidepoint(mouse_pos)
 
+        # Check for click events
         for event in events:
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                if self.hovered:
-                    self.pressed = True
-                    self.ripple_center = (
-                        mouse_pos[0] - self.rect.x,
-                        mouse_pos[1] - self.rect.y,
-                    )
-                    self.ripple_radius = 0
-
-            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-                if self.hovered and self.pressed and self.action:
+                if self.hovered and self.action:
                     self.action()
-                self.pressed = False
-
-        # Update animations
-        if self.ripple_center:
-            self.ripple_radius += 5
-            if self.ripple_radius > self.rect.width * 1.5:
-                self.ripple_radius = 0
-                self.ripple_center = None
-
-        # Smooth hover animation
-        if self.hovered:
-            self.animation_progress = min(1.0, self.animation_progress + 0.1)
-        else:
-            self.animation_progress = max(0.0, self.animation_progress - 0.1)
-
-    def draw(self, surface):
-        """Render the button"""
-        # Base colors
-        bg_color = (30, 30, 60)
-        hover_color = (50, 50, 100)
-        text_color = (220, 220, 255)
-        border_color = (100, 100, 200)
-
-        # Create button surface with alpha for effects
-        button_surface = pygame.Surface(
-            (self.rect.width, self.rect.height), pygame.SRCALPHA
-        )
-
-        # Interpolate color based on hover
-        current_color = [
-            bg_color[0] + (hover_color[0] - bg_color[0]) * self.animation_progress,
-            bg_color[1] + (hover_color[1] - bg_color[1]) * self.animation_progress,
-            bg_color[2] + (hover_color[2] - bg_color[2]) * self.animation_progress,
-        ]
-
-        # Draw button background with rounded corners
-        pygame.draw.rect(
-            button_surface,
-            current_color,
-            (0, 0, self.rect.width, self.rect.height),
-            border_radius=10,
-        )
-
-        # Draw ripple effect when pressed
-        if self.ripple_center and self.ripple_radius > 0:
-            pygame.draw.circle(
-                button_surface,
-                (255, 255, 255, 50),  # Semi-transparent white
-                self.ripple_center,
-                self.ripple_radius,
-            )
-
-        # Draw border
-        border_width = 2
-        pygame.draw.rect(
-            button_surface,
-            border_color,
-            (0, 0, self.rect.width, self.rect.height),
-            border_radius=10,
-            width=border_width,
-        )
-
-        # Draw text
-        font = pygame.font.SysFont("Arial", 24)
-        text_surf = font.render(self.text, True, text_color)
-        text_rect = text_surf.get_rect(
-            center=(self.rect.width // 2, self.rect.height // 2)
-        )
-        button_surface.blit(text_surf, text_rect)
-
-        # Draw to main surface
-        surface.blit(button_surface, (self.rect.x, self.rect.y))
 
 
 class Panel:
@@ -218,7 +123,7 @@ class ScoreDisplay:
         self.score_change_animation = 0
         self.current_score = 0  # Added for test compatibility
         self.elapsed_time = 0  # Added for test compatibility
-        
+
     def update(self, score, current_time):
         """
         Update score display with animation

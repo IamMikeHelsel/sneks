@@ -44,8 +44,8 @@ class Game:
             self.is_game_over = True
             return
 
-        # Check for self collision
-        if self.snake.check_self_collision():
+        # Check if the snake is dead due to self-collision
+        if self.snake.is_dead:self.snake.body[1:]:
             self.is_game_over = True
             return
 

@@ -247,7 +247,7 @@ class ScreenManager:
         if name in self.screens:
             self.current_screen = name
         else:
-            raise ValueError(f"Screen '{name}' not found")
+            raise KeyError(f"Screen '{name}' not found")
 
     def get_current_screen(self):
         """Get the currently active screen object"""
