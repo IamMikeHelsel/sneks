@@ -7,13 +7,13 @@ setup(
     author="Sneks Developer",
     packages=find_packages(),
     include_package_data=True,
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     install_requires=[
-        'pygame',
+        "pygame",
     ],
     entry_points={
-        'console_scripts': [
-            'sneks=main:main',
+        "console_scripts": [
+            "sneks=main:main",
         ],
     },
 )
