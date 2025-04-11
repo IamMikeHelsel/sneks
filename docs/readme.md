@@ -1,4 +1,4 @@
-# Modern Python Snake Game
+# sneks
 
 ## Description
 
@@ -86,80 +86,3 @@ The enhanced UI system includes several features you can test:
    * Try the Restart button to begin a new game immediately
    * Return to the main menu via the Main Menu button
 
-## How to Run Tests
-
-Tests are written using `pytest` and ensure the core game logic functions correctly.
-
-1. **Run all tests:**
-
-    ```bash
-    pytest
-    ```
-
-2. **Run tests with coverage report:**
-
-    ```bash
-    pytest --cov=src --cov-report=html
-    ```
-
-    *(Note: Replace `src` with the actual source directory name. This command generates an HTML coverage report in the `htmlcov` directory.)*
-
-## Future Development Ideas
-
-Here are some ideas for future enhancements to the Snake game:
-
-1. **Game Modes**
-   * Survival mode with increasing difficulty
-   * Time attack mode
-   * Maze mode with obstacles
-   * Mission-based levels with specific goals
-
-2. **Enhanced Features**
-   * High score system with persistent storage
-   * Customizable game settings (speed, grid size, etc.)
-   * Power-ups and special food items
-   * Additional visual themes/skins
-   * Sound effects and background music
-
-3. **Technical Improvements**
-   * Optimizations for better performance on low-end devices
-   * Support for gamepad/controller input
-   * AI opponent or demo mode
-   * Online multiplayer functionality
-   * Mobile-friendly touch controls
-
-## Distribution Options
-
-Consider these options for distributing your Snake game:
-
-1. **Desktop Application**
-   * Package as standalone executable using PyInstaller
-
-     ```bash
-     pip install pyinstaller
-     pyinstaller --onefile --windowed main.py
-     ```
-
-   * Create platform-specific installers using tools like Inno Setup (Windows) or AppImage (Linux)
-   * Distribute via GitHub Releases with version tracking
-
-2. **Web Distribution**
-   * Convert to web application using Pygbag or Pyodide
-   * Host on GitHub Pages or similar free hosting services
-   * Share on game portals like itch.io or Game Jolt
-
-3. **Package Distribution**
-   * Publish to PyPI (Python Package Index)
-
-     ```bash
-     pip install setuptools wheel twine
-     python setup.py sdist bdist_wheel
-     twine upload dist/*
-     ```
-
-   * This allows users to install with `pip install snake-game`
-
-4. **Alternative Platforms**
-   * Package in Docker container for consistent deployment
-   * Create Android/iOS versions using Pygame subset for mobile or Kivy
-   * Consider game engine exports (e.g., via Godot with Python integration)
