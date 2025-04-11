@@ -11,10 +11,9 @@ on:
       - main
 
 jobs:
-  premissions: read, write
   test:
     runs-on: ubuntu-latest
-
+    permissions: read-all
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
