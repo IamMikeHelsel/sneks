@@ -31,11 +31,13 @@ class MenuScreen(Screen):
     """Main menu screen with game options"""
 
     def __init__(
-        self, screen_width, screen_height, start_game_callback, open_options_callback
+        self, screen_width, screen_height, start_game_callback, open_options_callback, set_mode_callback=None
     ):
         super().__init__(screen_width, screen_height)
         self.start_game_callback = start_game_callback
         self.open_options_callback = open_options_callback
+        self.set_mode_callback = set_mode_callback
+        self.selected_mode = "normal"  # 'normal' or 'classic'
 
         # Background animation
         self.bg_offset = 0
@@ -61,6 +63,15 @@ class MenuScreen(Screen):
             self.start_game_callback,
         )
 
+        self.classic_mode_button = Button(
+            center_x - button_width // 2,
+            center_y - 60,
+            button_width,
+            button_height,
+            "Classic Mode",
+            self._select_classic_mode,
+        )
+
         self.quit_button = Button(
             center_x - button_width // 2,
             center_y + 100,
@@ -73,9 +84,15 @@ class MenuScreen(Screen):
         # Create panels
         self.main_panel = Panel(center_x - 250, center_y - 200, 500, 400)
 
+    def _select_classic_mode(self):
+        self.selected_mode = "classic"
+        if self.set_mode_callback:
+            self.set_mode_callback("classic")
+
     def handle_events(self, events):
         """Process pygame events"""
         self.start_button.update(events)
+        self.classic_mode_button.update(events)
         self.quit_button.update(events)
 
     def update(self, dt):
@@ -129,6 +146,7 @@ class MenuScreen(Screen):
         surface.blit(subtitle, subtitle_pos)
 
         # Draw buttons
+        self.classic_mode_button.draw(surface)
         self.start_button.draw(surface)
         self.quit_button.draw(surface)
 
@@ -137,12 +155,13 @@ class GameScreen(Screen):
     """Game screen that handles the actual gameplay"""
 
     def __init__(
-        self, screen_width, screen_height, game, renderer, return_to_menu_callback
+        self, screen_width, screen_height, game, renderer, return_to_menu_callback, gps=10
     ):
         super().__init__(screen_width, screen_height)
         self.game = game
         self.renderer = renderer
         self.return_to_menu_callback = return_to_menu_callback
+        self.gps = gps  # Game steps per second for classic mode
 
         # Initialize UI components
         self.score_display = ScoreDisplay(10, 10)
@@ -151,6 +170,9 @@ class GameScreen(Screen):
         # Game state
         self.paused = False
         self.game_over = False
+
+    def set_gps(self, gps):
+        self.gps = gps
 
     def handle_events(self, events):
         """Handle game events"""
