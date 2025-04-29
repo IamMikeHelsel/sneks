@@ -28,5 +28,5 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest
+        pytest -n auto
       continue-on-error: true
