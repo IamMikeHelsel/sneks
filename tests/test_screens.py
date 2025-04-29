@@ -48,7 +48,7 @@ class TestScreenManager(unittest.TestCase):
         self.assertEqual(self.screen_manager.current_screen, "test")
 
         # Test with non-existent screen
-        with self.assertRaises(KeyError):
+        with self.assertRaises(ValueError):
             self.screen_manager.set_current_screen("nonexistent")
 
     def test_get_current_screen(self):
