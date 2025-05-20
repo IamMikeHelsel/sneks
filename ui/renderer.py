@@ -33,17 +33,10 @@ class SnakeRenderer:
 
     def _initialize_assets(self):
         """Initialize and cache game assets"""
-        # Create snake segment assets (head and body with smooth borders)
-        self.assets["snake_body"] = self._create_smooth_rect(
-            GRID_SIZE, GRID_SIZE, (50, 220, 50), (30, 180, 30), 0.7
-        )
-
-        self.assets["snake_head"] = self._create_smooth_rect(
-            GRID_SIZE, GRID_SIZE, (70, 255, 70), (40, 220, 40), 0.7
-        )
-
-        # Create food asset (circular with glow effect)
+        # Snake segment assets are now created dynamically based on snake color.
+        # Keep food asset
         self.assets["food"] = self._create_food_surface()
+        self.snake_segment_cache = {} # Cache for snake segments by color
 
     def _create_background(self):
         """Create a pre-rendered background grid surface for performance"""
@@ -59,7 +52,7 @@ class SnakeRenderer:
         return bg
 
     def _create_smooth_rect(
-        self, width, height, color, edge_color, corner_radius_factor=0.5
+        self, width, height, base_color, edge_color, corner_radius_factor=0.5
     ):
         """Create a rectangle with smooth edges and gradient fill"""
         surf = pygame.Surface((width, height), pygame.SRCALPHA)
@@ -67,18 +60,20 @@ class SnakeRenderer:
         corner_radius = int(min(width, height) * corner_radius_factor)
 
         # Draw rounded rectangle with anti-aliasing
-        pygame.draw.rect(surf, color, rect, border_radius=corner_radius)
+        pygame.draw.rect(surf, base_color, rect, border_radius=corner_radius)
 
-        # Add subtle inner gradient
-        for i in range(corner_radius):
-            alpha = 255 - int(255 * i / corner_radius)
-            pygame.draw.rect(
-                surf,
-                (*edge_color, alpha),
-                rect.inflate(-2 * i, -2 * i),
-                border_radius=corner_radius - i,
-            )
-
+        # Add subtle inner gradient / edge highlight
+        # For simplicity, let's draw a slightly smaller, darker rect for the edge effect
+        # or use the provided edge_color for an outline effect.
+        # A true gradient as before might be too complex if edge_color is just a single color.
+        # Let's try a border highlight approach.
+        pygame.draw.rect(
+            surf,
+            edge_color,
+            rect,
+            border_radius=corner_radius,
+            width=max(1,int(width/10)) # Border width
+        )
         return surf
 
     def _create_food_surface(self):
@@ -100,25 +95,55 @@ class SnakeRenderer:
         # Update food pulsing effect
         self.food_pulse = (self.food_pulse + 0.1) % (2 * math.pi)
 
+    def _get_or_create_snake_segment_surface(self, color_tuple, segment_type="body"):
+        """ Gets a snake segment surface from cache or creates and caches it. """
+        if (color_tuple, segment_type) in self.snake_segment_cache:
+            return self.snake_segment_cache[(color_tuple, segment_type)]
+
+        base_color = color_tuple
+        # Make edge color slightly darker for depth
+        edge_color = tuple(max(0, c - 40) for c in base_color[:3]) 
+        
+        # Make head slightly lighter or different
+        if segment_type == "head":
+            head_base_color = tuple(min(255, c + 30) for c in base_color[:3])
+            head_edge_color = tuple(max(0, c - 20) for c in head_base_color[:3])
+            surface = self._create_smooth_rect(GRID_SIZE, GRID_SIZE, head_base_color, head_edge_color, 0.7)
+        else: # body
+            surface = self._create_smooth_rect(GRID_SIZE, GRID_SIZE, base_color, edge_color, 0.7)
+        
+        self.snake_segment_cache[(color_tuple, segment_type)] = surface
+        return surface
+
     def render_background(self, screen):
         """Render the background grid"""
         screen.blit(self.background, (0, 0))
 
-    def render_snake(self, screen, snake):
+    def render_snakes(self, screen, snakes_dict):
         """
-        Render the snake with visual enhancements
+        Render all snakes with visual enhancements using their assigned colors.
 
         Args:
             screen: Pygame surface to draw on
-            snake: Snake object to render
+            snakes_dict: Dictionary of snake objects {player_id: snake_obj}
         """
-        # Render body segments (in reverse so head renders on top)
-        for i, segment in enumerate(reversed(snake.body)):
-            # Head gets special treatment
-            if i == len(snake.body) - 1:
-                screen.blit(self.assets["snake_head"], segment)
-            else:
-                screen.blit(self.assets["snake_body"], segment)
+        if not snakes_dict:
+            return
+
+        for player_id, snake_obj in snakes_dict.items():
+            if not snake_obj or not hasattr(snake_obj, 'body') or not hasattr(snake_obj, 'color'):
+                continue # Skip if snake object is malformed or lacks color
+
+            snake_color_tuple = snake_obj.color 
+            
+            # Render body segments (in reverse so head renders on top)
+            for i, segment_pos in enumerate(reversed(snake_obj.body)):
+                is_head = (i == len(snake_obj.body) - 1)
+                segment_type = "head" if is_head else "body"
+                
+                segment_surface = self._get_or_create_snake_segment_surface(snake_color_tuple, segment_type)
+                screen.blit(segment_surface, segment_pos)
+
 
     def render_food(self, screen, food):
         """
@@ -217,7 +242,12 @@ class SnakeRenderer:
 
         # Draw all components
         self.render_background(screen)
-        self.render_snake(screen, game.snake)
+        if hasattr(game, 'snakes'): # Multiplayer game has game.snakes dict
+            self.render_snakes(screen, game.snakes)
+        elif hasattr(game, 'snake'): # Single player game might have game.snake
+             # Adapt for single snake if necessary, or ensure game.snakes is always used
+             # For now, assuming render_snakes can handle a dict with one snake
+             self.render_snakes(screen, {"player1": game.snake} if game.snake else {})
         self.render_food(screen, game.food)
         self.render_score(screen, game.score)
 
@@ -229,17 +259,21 @@ class SnakeRenderer:
 
     def render_game(self, surface, game):
         """
-        Render the complete game state including snake and food
+        Render the complete game state including snakes and food
 
         Args:
             surface: The surface to draw on
-            game: The game state to render
+            game: The game state to render (should have game.snakes, game.food, game.score, game.is_game_over)
         """
         # First render the background
         self.render_background(surface)
 
-        # Render the snake
-        self.render_snake(surface, game.snake)
+        # Render the snakes
+        if hasattr(game, 'snakes'):
+             self.render_snakes(surface, game.snakes)
+        elif hasattr(game, 'snake'): # Backwards compatibility or single player mode
+             self.render_snakes(surface, {"player1": game.snake} if game.snake else {})
+
 
         # Render food
         self.render_food(surface, game.food)

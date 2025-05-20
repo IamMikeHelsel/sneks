@@ -6,15 +6,19 @@ class Snake:
     Snake class representing the player-controlled snake
     """
 
-    def __init__(self, x, y):
+    def __init__(self, x, y, player_id, color):
         """
         Initialize a snake with a single segment at the given position
 
         Args:
             x: Initial x-coordinate for the snake's head
             y: Initial y-coordinate for the snake's head
+            player_id: The ID of the player this snake belongs to
+            color: The color of the snake
         """
         # Initialize snake with a single segment
+        self.player_id = player_id
+        self.color = color
         self.body = [(x, y)]
         self.is_dead = False
         # Start with right direction

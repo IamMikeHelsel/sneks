@@ -18,18 +18,18 @@ class Food:
         self.x = x
         self.y = y
 
-    def randomize_position(self, max_x, max_y, snake_body=None):
+    def randomize_position(self, max_x, max_y, all_snake_bodies=None):
         """
         Randomize the food position within the bounds and
-        avoiding the snake's body
+        avoiding all snakes' bodies
 
         Args:
             max_x: Maximum x coordinate
             max_y: Maximum y coordinate
-            snake_body: List of (x, y) positions of the snake's body to avoid
+            all_snake_bodies: List of (x, y) positions of all snakes' bodies to avoid
         """
         # Ensure correct parameters
-        snake_body = snake_body or []
+        all_snake_bodies = all_snake_bodies or []
 
         # Calculate grid-aligned positions
         grid_max_x = (max_x // GRID_SIZE) - 1
@@ -44,8 +44,8 @@ class Food:
             new_x = random.randint(0, grid_max_x) * GRID_SIZE
             new_y = random.randint(0, grid_max_y) * GRID_SIZE
 
-            # Check if position is free (not on snake body)
-            if (new_x, new_y) not in snake_body:
+            # Check if position is free (not on any snake body)
+            if (new_x, new_y) not in all_snake_bodies:
                 self.x = new_x
                 self.y = new_y
                 return
@@ -57,17 +57,17 @@ class Food:
         self.x = random.randint(0, grid_max_x) * GRID_SIZE
         self.y = random.randint(0, grid_max_y) * GRID_SIZE
 
-    def reposition(self, snake_body):
+    def reposition(self, all_snake_bodies):
         """
-        Reposition the food to avoid the snake's body (alias for randomize_position)
+        Reposition the food to avoid all snakes' bodies (alias for randomize_position)
 
         Args:
-            snake_body: List of (x, y) positions of the snake's body to avoid
+            all_snake_bodies: List of (x, y) positions of all snakes' bodies to avoid
         """
         # Use existing screen dimensions
         max_x = 800  # Default maximum x
         max_y = 600  # Default maximum y
-        self.randomize_position(max_x, max_y, snake_body)
+        self.randomize_position(max_x, max_y, all_snake_bodies)
 
     def get_position(self):
         """
